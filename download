@@ -1,0 +1,4 @@
+JWT_SECRET=super_secret_key
+JWT_REFRESH_SECRET=super_refresh_secret
+ACCESS_EXPIRES=900s       # 15 хв
+REFRESH_EXPIRES=7d
