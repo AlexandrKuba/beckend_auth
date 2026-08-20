@@ -1,0 +1,32 @@
+[
+  {
+    "id": "1",
+    "email": "admin@example.com",
+    "password": "$2b$10$3JZrCR3vPtRRhcxXxYtbTOL3Wkz92D0RrgULCD1gJKsUtclgrnTqq",
+    "role": "admin"
+  },
+  {
+    "id": "2",
+    "email": "manager1@example.com",
+    "password": "$2b$10$3JZrCR3vPtRRhcxXxYtbTOL3Wkz92D0RrgULCD1gJKsUtclgrnTqq",
+    "role": "manager"
+  },
+  {
+    "id": "3",
+    "email": "manager2@example.com",
+    "password": "$2b$10$3JZrCR3vPtRRhcxXxYtbTOL3Wkz92D0RrgULCD1gJKsUtclgrnTqq",
+    "role": "manager"
+  },
+  {
+    "id": "4",
+    "email": "client1@example.com",
+    "password": "$2b$10$3JZrCR3vPtRRhcxXxYtbTOL3Wkz92D0RrgULCD1gJKsUtclgrnTqq",
+    "role": "client"
+  },
+  {
+    "id": "5",
+    "email": "client2@example.com",
+    "password": "$2b$10$3JZrCR3vPtRRhcxXxYtbTOL3Wkz92D0RrgULCD1gJKsUtclgrnTqq",
+    "role": "client"
+  }
+]
