@@ -14,13 +14,16 @@ dotenv.config()
 const app = express()
 
 // app.use(cors({ origin: 'http://localhost:5173/', credentials: true }))
-app.use(
-  cors({
-    origin: ['http://localhost:5173', 'http://localhost:5174', 'https://react-lesson17.onrender.com'], // ✅ фронтенд (Vite)
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true, // ✅ дозвіл надсилати cookie
-  })
-)
+app.use(cors({
+  origin: function (origin, callback) {
+    // Автоматично дозволяємо домен, з якого прийшов запит (як локальний, так і на Render)
+    callback(null, true);
+  },
+  credentials: true, // Дозволяє куки та сесії
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  optionsSuccessStatus: 200 // Важливо для застарілих браузерів та деяких preflight-запитів
+}));
 
 app.use(express.json())
 app.use(cookieParser())
