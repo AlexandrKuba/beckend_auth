@@ -25,7 +25,6 @@ function generateRefreshToken(user) {
 }
 
 // Логін користувача
-
 router.post('/login', async (req, res) => {
   // 1. Отримуємо email і password з тіла запиту
   const { email, password } = req.body
@@ -37,6 +36,11 @@ router.post('/login', async (req, res) => {
   // 4. Якщо користувача не знайдено або пароль не співпадає — помилка
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(401).json({ error: 'Invalid credentials' })
+  }
+
+  // 4.5. ПЕРЕВІРКА СТАТУСУ: Якщо користувач увільнений — повністю блокуємо вхід
+  if (user.isFired) {
+    return res.status(403).json({ error: 'Account deactivated. Access denied.' })
   }
 
   // 5. Генеруємо accessToken і refreshToken
@@ -58,7 +62,6 @@ router.post('/login', async (req, res) => {
 })
 
 // Оновлення accessToken за допомогою refreshToken
-
 router.post('/refresh', async (req, res) => {
   // 1. Отримуємо refreshToken з cookie
   const token = req.cookies.refreshToken
@@ -70,7 +73,13 @@ router.post('/refresh', async (req, res) => {
     const users = await readJSON(usersFile)
     // 4. Шукаємо користувача за id з токена
     const user = users.find((u) => u.id == payload.id)
-    if (!user) return res.sendStatus(401)
+    
+    // 4.5. ПЕРЕВІРКА СТАТУСУ: Якщо користувача не знайдено або він увільнений — скидаємо сесію
+    if (!user || user.isFired) {
+      res.clearCookie('refreshToken') // Очищаємо куки, щоб фронтенд зрозумів, що сесія мертва
+      return res.sendStatus(403)
+    }
+
     // 5. Генеруємо новий accessToken
     const accessToken = generateAccessToken(user)
     // 6. Відправляємо новий accessToken і дані користувача у відповідь
