@@ -178,4 +178,37 @@ router.delete('/:id', requireAuth, requireRole('admin'), async (req, res) => {
   }
 })
 
+// 7. ВІДНОВЛЕННЯ звільненого користувача за ID (Тільки для admin)
+router.post('/:id/restore', requireAuth, requireRole('admin'), async (req, res) => {
+  try {
+    const userIdToRestore = req.params.id
+
+    const users = await readJSON(file)
+    const userIdx = users.findIndex((u) => u.id == userIdToRestore)
+
+    // 1. Перевіряємо, чи існує користувач
+    if (userIdx === -1) {
+      return res.status(404).json({ message: 'Користувача не знайдено' })
+    }
+
+    // 2. Перевіряємо, чи він дійсно звільнений
+    if (!users[userIdx].isFired) {
+      return res.status(400).json({ message: 'Цей користувач і так є активним співробітником' })
+    }
+
+    // 3. Змінюємо прапорець увільнення назад на false
+    users[userIdx].isFired = false
+    await writeJSON(file, users)
+
+    // 4. Повертаємо оновлені дані без пароля
+    const { password: _, ...userResponse } = users[userIdx]
+    res.json({ 
+      message: 'Співробітника успішно відновлено на роботі', 
+      user: userResponse 
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Помилка сервера', error: error.message })
+  }
+})
+
 export default router
